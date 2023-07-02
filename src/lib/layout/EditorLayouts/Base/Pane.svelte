@@ -3,11 +3,26 @@
     import { hover } from '$lib/actions/hover';
     import { fade } from 'svelte/transition';
 
-    export let id;
-    export let label;
+    /**
+	 * @type {string | string[]}
+	 */
+     export let id;
+    /**
+	 * @type {any}
+	 */
+     export let label;
 
+    /**
+	 * @type {HTMLElement}
+	 */
     let split;
+    /**
+	 * @type {number}
+	 */
     let splitClientWidth;
+    /**
+	 * @type {number}
+	 */
     let splitClientHeight;
     let showPaneOptions = false;
 
@@ -70,7 +85,7 @@
         split.style.minWidth = `${30}px`;
      }
 
-    const maximize = async (currentChild, isVertical = false) => {
+    const maximize = async (/** @type {MouseEvent & { currentTarget: EventTarget & HTMLDivElement; }} */ currentChild, isVertical = false) => {
 		const { target } = currentChild;
 		const parentSplit = target.closest('.split');
 		const parentSection = target.closest('section');
@@ -79,22 +94,17 @@
 		const gutterCount =
 			[...children].filter((child) => child?.classList?.contains('gutter'))?.length ?? 0;
 		const adjustedChildCount = childCountTotal - gutterCount;
+        const mappedChildren = [...children]?.filter((child) => !child?.classList?.contains('gutter'));
 
-		[...children]?.forEach((child) => {
-			if (parentSection == child) {
-				child.style[`${isVertical ? 'height' : 'width'}`] = `calc(100% - ${((isVertical ?  30 : 30)*(adjustedChildCount - 1)) + (((adjustedChildCount - 1))*10)}px)`;
-				if (!isVertical) {
-					child.querySelector('.slot-control-bar .container').style.transform = 'rotate(0deg)';
-				}
+        mappedChildren?.forEach((child) => {
+            if (parentSection == child) {
+				child.style[`${isVertical ? 'height' : 'width'}`] = `calc(100% - ${((isVertical ?  30 : 30) * (adjustedChildCount - 1)) + (((adjustedChildCount - 1))*10)}px)`;
+				child.querySelector('.slot-control-bar .container').style.transform = 'rotate(0deg)';
 			} else if (parentSection != child && !child?.classList?.contains('gutter')) {
 				child.style[`${isVertical ? 'height' : 'width'}`] = `calc(${(isVertical ? 30 : 30)}px)`;
-				if (!isVertical && !isEditor) {
-                    if (!isOutput) {
-                        child.querySelector('.slot-control-bar .container').style.transform = 'rotate(90deg)';
-                    }
-				} 
+                child.querySelector('.slot-control-bar .container').style.transform = 'rotate(90deg)';
 			}
-		});
+        });
 	};
 
 </script>

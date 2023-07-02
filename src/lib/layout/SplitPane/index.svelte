@@ -1,15 +1,23 @@
 <svelte:options accessors />
 
 <script>
-	import { onMount, afterUpdate, onDestroy } from 'svelte';
-	import { clearSplit, splitStore } from '$lib/stores/splitStore';
+	import { afterUpdate, onDestroy } from 'svelte';
+	import { clearSplit } from '$lib/stores/splitStore';
 	import Split from 'split.js';
-	import { page } from '$app/stores';
 	import { paneMinHeightModifier } from '$lib/stores/layoutStore';
-	export let panes;
-	export let sizes = null;
+	/**
+	 * @type {any[]}
+	 */
+	 export let panes;
+	/**
+	 * @type {null}
+	 */
+	 export let sizes = null;
 	export let vertical = false;
 
+	/**
+	 * @type {Split.Instance}
+	 */
 	let splitInstance;
 
 	const reloadSplit = () => {
@@ -20,11 +28,15 @@
 		splitInstance = Split(panes, {
 			direction: vertical ? 'vertical' : 'horizontal',
 			gutterSize: 10,
+			// @ts-ignore
 			sizes,
 			minSize: $paneMinHeightModifier
 		});
 	};
 
+	/**
+	 * @type {HTMLDivElement | null}
+	 */
 	let split;
 
 	afterUpdate(() => {
